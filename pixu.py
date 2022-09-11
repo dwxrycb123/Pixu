@@ -137,7 +137,6 @@ if __name__ == '__main__':
                 return 
             artwork_ids = list(artwork_ids)[:5]
 
-
             await asyncio.gather(
                 *(pixu.download_artwork(artwork_id, f'./downloads/{artwork_id}.jpg') \
                 for artwork_id in artwork_ids)

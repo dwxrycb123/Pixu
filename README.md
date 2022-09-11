@@ -28,7 +28,6 @@ async def test_download_from_user(name='千種みのり'):
             return 
         artwork_ids = list(artwork_ids)[:5]
 
-
         await asyncio.gather(
             *(pixu.download_artwork(artwork_id, f'./downloads/{artwork_id}.jpg') \
             for artwork_id in artwork_ids)
@@ -37,6 +36,7 @@ async def test_download_from_user(name='千種みのり'):
         msg = e if len(str(e)) else type(e)
         print(f'Exception occured: {msg}, download failed.')
         return 
+        
 asyncio.run(test_download_from_user())
 ```
 
