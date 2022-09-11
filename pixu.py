@@ -45,8 +45,8 @@ class Pixu:
     search_user_url = "https://www.pixiv.net/search_user.php"
     user_artworks_url = lambda user_id: \
         f"https://www.pixiv.net/ajax/user/{user_id}/profile/all?lang=zh"
-    artwork_info_url = lambda artwork_id: \
-        f"https://www.pixiv.net/ajax/user/7618326/illusts?ids%5B%5D={artwork_id}&lang=zh"
+    artwork_info_url = lambda user_id, artwork_id: \
+        f"https://www.pixiv.net/ajax/user/{user_id}/illusts?ids%5B%5D={artwork_id}&lang=zh"
     update_date_re = (r'(?P<year>\d+)-(?P<month>\d+)-(?P<day>\d+)T'
         '(?P<hour>\d+):(?P<minute>\d+):(?P<second>\d+)\+09:00')
     update_date_pattern  = re.compile(update_date_re)
@@ -85,9 +85,9 @@ class Pixu:
             return artworks
 
     @retries(settings["retries"])
-    async def get_artwork_info(self, artwork_id: int) -> dict:
+    async def get_artwork_info(self, user_id:int, artwork_id: int) -> dict:
         async with httpx.AsyncClient(**self.client_args) as client:
-            r = await client.get(Pixu.artwork_info_url(artwork_id), **self.get_args)
+            r = await client.get(Pixu.artwork_info_url(user_id, artwork_id), **self.get_args)
             r_json: dict = r.json()
             artwork_info = {"raw": r_json["body"][str(artwork_id)]}
             raw_update_date = artwork_info["raw"]["updateDate"]
@@ -110,8 +110,8 @@ class Pixu:
                 for data in r.iter_bytes():
                     f.write(data)
     
-    async def download_artwork(self, artwork_id: int, save_path: str) -> None:
-        artwork_info = await self.get_artwork_info(artwork_id)   
+    async def download_artwork(self, user_id: int, artwork_id: int, save_path: str) -> None:
+        artwork_info = await self.get_artwork_info(user_id, artwork_id)   
         url = artwork_info['url']
         await self.download_image(url, save_path)
 
@@ -138,7 +138,7 @@ if __name__ == '__main__':
             artwork_ids = list(artwork_ids)[:5]
 
             await asyncio.gather(
-                *(pixu.download_artwork(artwork_id, f'./downloads/{artwork_id}.jpg') \
+                *(pixu.download_artwork(user_id, artwork_id, f'./downloads/{artwork_id}.jpg') \
                 for artwork_id in artwork_ids)
             )
         except Exception as e:
