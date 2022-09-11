@@ -54,4 +54,4 @@ asyncio.run(test_download_from_user())
 This piece of code is also in `pixu.py`. 
 
 # robots.txt
-From my understanding, the methods of `Pixu` class are not violating the current [robots.txt](https://www.pixiv.net/robots.txt) so far. Please contact me if related issues exist. 
+To my understanding, the methods of `Pixu` class are not violating the current [robots.txt](https://www.pixiv.net/robots.txt) so far. Please contact me if related issues exist. 
