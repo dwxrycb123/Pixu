@@ -5,7 +5,6 @@ import httpx
 import json
 import asyncio
 import os
-from io import BytesIO
 from functools import wraps
 
 settings = {
